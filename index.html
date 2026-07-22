@@ -1,255 +1,646 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Papa's JRK661 Keyboard Helper</title>
-    <style>
-        :root {
-            --primary: #1e3a8a;
-            --accent: #d97706;
-            --bg: #f8fafc;
-            --text: #0f172a;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Papa's JRK661 Keyboard Guide</title>
+  <style>
+    :root {
+      --primary: #b45309; /* warm amber */
+      --accent: #f59e0b;
+      --bg: #fffaf0; /* soft cream */
+      --panel-bg: #ffffff;
+      --panel-surface: #fff6eb;
+      --text: #111827; /* deep charcoal */
+      --muted: #6b7280;
+      --shadow: rgba(17, 24, 39, 0.06);
+      --visible-keys: 18; /* 1.5 octaves visible */
+      --key-width: calc((100vw - 48px) / var(--visible-keys));
+    }
+  <style>
+    :root{
+      --primary:#b45309;--accent:#f59e0b;--bg:#fffaf0;--panel-bg:#ffffff;--panel-surface:#fff6eb;--text:#111827;--muted:#6b7280;--shadow:rgba(17,24,39,0.06);--visible-keys:18;--key-width:calc((100vw - 48px)/var(--visible-keys))
+    }
+    *,*::before,*::after{box-sizing:border-box}
+    html,body{height:100%;margin:0;padding:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+    body{padding:12px;font-size:18px;line-height:1.45}
+    header{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;margin-bottom:10px}
+    header h1{margin:0;font-size:clamp(1.6rem,4.2vw,2.2rem);color:var(--primary)}
+    header p{margin:4px 0 0;color:#475569;max-width:620px}
+    .stage{display:grid;gap:12px}
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            margin: 0;
-            padding: 16px;
-            max-width: 900px;
-            margin: 0 auto;
-        }
+    /* Keyboard chassis (light, no ::before pseudo-element) */
+    .keyboard-chassis{background:var(--panel-bg);border-radius:16px;padding:12px;color:var(--text);box-shadow:0 8px 20px var(--shadow);border:1px solid rgba(17,24,39,0.04)}
 
-        h1 {
-            color: var(--primary);
-            text-align: center;
-            font-size: 1.8rem;
-            margin-bottom: 8px;
-        }
+    .panel-group{display:grid;gap:10px;background:var(--panel-surface);padding:12px;border-radius:12px;border:1px solid rgba(17,24,39,0.04)}
+    .panel-label{color:var(--muted);font-size:0.95rem;font-weight:700;letter-spacing:0.03em;text-transform:uppercase}
 
-        .subtitle {
-            text-align: center;
-            color: #475569;
-            margin-bottom: 24px;
-        }
+    /* Primary buttons: solid amber */
+    .panel-button,.panel-mini-button{display:inline-block;background:var(--primary);color:#fff;border:0;border-radius:12px;padding:12px 18px;font-weight:800;font-size:1.1rem;min-height:52px;cursor:pointer;box-shadow:0 4px 12px rgba(180,83,9,0.2)}
+    .panel-button:active,.panel-mini-button:active{transform:translateY(1px)}
 
-        .card {
-            background: #ffffff;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
+    /* Advanced Controls toggle: secondary visual */
+    #advanced-toggle{background:transparent !important;color:var(--primary) !important;border:2px solid var(--primary);box-shadow:none !important;padding:10px 16px;font-weight:800;min-height:48px}
 
-        .card h2 {
-            margin-top: 0;
-            color: var(--primary);
-            font-size: 1.3rem;
-            border-bottom: 2px solid #e2e8f0;
-            padding-bottom: 8px;
-        }
+    /* Dropdown styling: do NOT use panel-button styling for select elements */
+    .select-dropdown{background:#fff;border:2px solid var(--primary);font-size:18px;padding:12px 16px;border-radius:12px;color:var(--text);-webkit-appearance:none;-moz-appearance:none;appearance:none}
+    /* Override existing select.panel-button in HTML to use select styling */
+    select.panel-button{background:#fff;border:2px solid var(--primary);color:var(--text);font-size:18px;padding:12px 16px;border-radius:12px;box-shadow:none;min-height:auto;width:100%;-webkit-appearance:none}
 
-        /* Keyboard Styles */
-        .keyboard-container {
-            overflow-x: auto;
-            padding: 10px 0;
-        }
+    .status-line{margin-top:8px;color:#475569;font-size:0.95rem}
 
-        .keyboard {
-            display: flex;
-            position: relative;
-            height: 180px;
-            width: fit-content;
-            margin: 0 auto;
-            user-select: none;
-        }
+    /* Status strip flows naturally above keyboard */
+    .status-strip{display:flex;gap:8px;align-items:center;justify-content:space-between;margin:10px 0;padding:4px 0;background:transparent}
+    .status-strip>*:nth-child(n+3){display:none}
+    .status-chip{background:#fff;border:1px solid rgba(17,24,39,0.06);border-radius:10px;padding:8px 10px;color:var(--text);font-size:0.92rem}
+    .status-chip strong{display:block;margin-bottom:4px;color:var(--muted);font-size:0.78rem}
 
-        .key {
-            border: 1px solid #94a3b8;
-            border-radius: 0 0 4px 4px;
-            cursor: pointer;
-            box-sizing: border-box;
-            display: flex;
-            align-items: flex-end;
-            justify-content: center;
-            padding-bottom: 8px;
-            font-weight: bold;
-            font-size: 0.8rem;
-            transition: background-color 0.1s;
-        }
+    .live-area{background:var(--panel-surface);border:1px solid rgba(17,24,39,0.04);border-radius:12px;padding:10px;display:grid;gap:10px;color:var(--text);grid-template-columns:1fr}
 
-        .key.white {
-            background: #ffffff;
-            width: 36px;
-            height: 100%;
-            z-index: 1;
-            color: #334155;
-        }
+    .keyboard-container{overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:6px;margin-top:6px}
+    .keyboard{position:relative;display:flex;align-items:flex-end;height:25vh;min-height:150px;max-height:200px;padding:0 8px 6px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+    .keyboard::-webkit-scrollbar{display:none}
 
-        .key.black {
-            background: #1e293b;
-            width: 22px;
-            height: 60%;
-            margin-left: -11px;
-            margin-right: -11px;
-            z-index: 2;
-            color: #ffffff;
-        }
+    .key{position:relative;border:1px solid rgba(17,24,39,0.06);display:flex;align-items:flex-end;justify-content:center;padding-bottom:8px;cursor:pointer;user-select:none;transition:transform .18s ease,box-shadow .18s ease}
+    .key.white{width:var(--key-width);height:100%;background:#fff;z-index:1;color:var(--text);border-radius:0 0 10px 10px;margin-right:2px}
+    .key.black{width:calc(var(--key-width)*0.66);height:62%;margin-left:calc(var(--key-width)*-0.33);margin-right:calc(var(--key-width)*-0.33);background:#111827;z-index:2;color:#fff;border-radius:0 0 8px 8px}
+    .key span{font-size:0.95rem;letter-spacing:.02em;margin-bottom:6px;font-weight:700}
+    .key.active{background:var(--accent)!important;color:#fff!important;box-shadow:0 0 0 3px rgba(217,119,6,0.18)}
 
-        .key.active {
-            background-color: var(--accent) !important;
-            color: #ffffff !important;
-        }
+    .live-step{background:#fff;border:1px solid rgba(17,24,39,0.06);border-radius:10px;padding:12px;text-align:center;font-size:1rem;color:var(--text);box-shadow:0 6px 12px var(--shadow)}
 
-        /* Settings Grid */
-        .setting-box {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 12px;
-            background: #f1f5f9;
-            padding: 12px;
-            border-radius: 8px;
-        }
-
-        .badge {
-            background: var(--primary);
-            color: white;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-weight: bold;
-            font-size: 0.9rem;
-            white-space: nowrap;
-        }
-
-        .btn {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 10px 18px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            margin-right: 8px;
-            margin-bottom: 8px;
-        }
-
-        .btn:hover {
-            opacity: 0.9;
-        }
-    </style>
+    @media(max-width:640px){.panel-button,.panel-mini-button{font-size:1.05rem;padding:12px 14px}.keyboard{min-width:1100px}}
+  </style>
 </head>
 <body>
-
-    <h1>Papa's Keyboard Assistant</h1>
-    <p class="subtitle">Quick reference guide & practice tool for the Juarez Octavé JRK661</p>
-
-    <!-- Visual Keyboard Card -->
-    <div class="card">
-        <h2>Interactive Key Finder</h2>
-        <p>Tap any key below to hear its pitch and check note labels:</p>
-        <div class="keyboard-container">
-            <div class="keyboard" id="piano"></div>
-        </div>
+  <header>
+    <div>
+      <h1>Juarez Octave JRK661 Simulator</h1>
+      <p>Interactive home screen for the JRK661 keyboard with 61 keys and realistic function buttons. Hover a button to read its meaning, and click Timbre to go to the live sound preset page.</p>
     </div>
-
-    <!-- Quick Tone Settings Guide -->
-    <div class="card">
-        <h2>Quick Tone Settings (JRK661)</h2>
-        
-        <div class="setting-box">
-            <span class="badge">Harmonium Sound</span>
-            <span>Press <strong>Tone</strong> &rarr; Enter <strong>0 2 1</strong> (Accordion/Reed) &rarr; Press <strong>Vibrato</strong></span>
-        </div>
-
-        <div class="setting-box">
-            <span class="badge">Grand Piano</span>
-            <span>Press <strong>Tone</strong> &rarr; Enter <strong>0 0 0</strong></span>
-        </div>
-
-        <div class="setting-box">
-            <span class="badge">Adjust Volume</span>
-            <span>Use the dedicated <strong>Master Volume</strong> knob/buttons on top left</span>
-        </div>
+    <div class="lang-switch">
+      <button class="lang-btn active" onclick="setLanguage('en', this)">English</button>
+      <button class="lang-btn" onclick="setLanguage('hi', this)">हिंदी</button>
     </div>
+  </header>
 
-    <!-- Scale & Melody Practice -->
-    <div class="card">
-        <h2>Melody Practice (Sargam)</h2>
-        <p>Play "Sa Re Ga Ma" scale step-by-step:</p>
-        <button class="btn" onclick="playSargam()">Play Sargam Scale</button>
-    </div>
+  <main class="stage">
+    <section class="keyboard-chassis">
+      <div class="top-panel">
+        <div class="panel-group quick-start" id="quick-start">
+          <div class="panel-label">Quick Start</div>
+          <div>
+            <div class="panel-label">Timbre / Sound</div>
+            <button class="panel-button" title="Open Timbre code input" onclick="toggleTimbrePanel()"><span id="timbre-button-text">Timbre</span></button>
+            <div class="status-line" id="timbre-status">Select Timbre to pick a code and instrument.</div>
+            <div class="timbre-panel hidden" id="timbre-panel">
+              <form class="timbre-form" onsubmit="applyTimbreCode(event)">
+                <div class="timbre-input-row">
+                  <input id="timbre-code" type="number" min="1" max="255" placeholder="Enter code 1–255" />
+                  <select id="timbre-select">
+                    <option value="000">000 — Grand Piano</option>
+                    <option value="021">021 — Harmonium</option>
+                    <option value="022">022 — Harmonium</option>
+                    <option value="048">048 — Strings</option>
+                    <option value="073">073 — Flute</option>
+                  </select>
+                  <button class="panel-mini-button" type="submit">Apply</button>
+                </div>
+              </form>
+            </div>
+          </div>
 
-    <script>
-        // Web Audio API Sound Generator
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        
-        function playNote(freq) {
-            if (audioCtx.state === 'suspended') {
-                audioCtx.resume();
-            }
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-            gain.gain.setValueAtTime(0.5, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1);
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            osc.start();
-            osc.stop(audioCtx.currentTime + 1);
+          <div style="margin-top:12px;">
+            <div class="panel-label">Song Guide</div>
+            <select id="song-select" onchange="selectSong(event)" class="panel-button">
+              <option value="twinkle">Twinkle Twinkle Little Star</option>
+              <option value="happy">Happy Birthday</option>
+              <option value="jingle">Jingle Bells</option>
+              <option value="mary">Mary Had a Little Lamb</option>
+              <option value="ode">Ode to Joy</option>
+              <option value="row">Row, Row, Row Your Boat</option>
+              <option value="london">London Bridge</option>
+              <option value="brahms">Brahms' Lullaby</option>
+              <option value="amazing">Amazing Grace</option>
+              <option value="oldmac">Old MacDonald</option>
+              <option value="silent">Silent Night</option>
+              <option value="frere">Frere Jacques</option>
+              <option value="saints">When the Saints Go Marching In</option>
+            </select>
+            <p class="status-line">Tap a song to load its guide. Use <strong>Show Sequence</strong> to view and play phrases.</p>
+          </div>
+        </div>
+
+        <button class="panel-button" id="advanced-toggle" aria-expanded="false" onclick="(function(){const p=document.getElementById('advanced-panel');p.classList.toggle('hidden');this.setAttribute('aria-expanded', this.getAttribute('aria-expanded')==='true'?'false':'true');})()">Advanced Controls</button>
+
+        <div class="panel-group hidden" id="advanced-panel">
+          <div class="panel-label">Advanced JRK661 Controls</div>
+          <div class="button-row">
+            <button class="panel-mini-button" title="Turn Vibrato on/off" onclick="toggleVibrato(this)">Vibrato</button>
+            <button class="panel-mini-button" title="Hold notes longer" onclick="toggleSustain(this)">Sustain</button>
+            <button class="panel-mini-button" title="Auto chord single-key mode" onclick="toggleOneKey(this)">One-Key</button>
+            <button class="panel-mini-button" title="Follow the melody input" onclick="toggleFollow(this)">Follow</button>
+            <button class="panel-mini-button" title="One-Key Chord" onclick="toggleOneKeyChord(this)">One-Key Chord</button>
+            <button class="panel-mini-button" title="Fill-In" onclick="toggleFillIn(this)">Fill-In</button>
+            <button class="panel-mini-button" title="Start/Stop" onclick="toggleStartStop(this)">Start/Stop</button>
+            <button class="panel-mini-button" title="Demo Song" onclick="toggleDemo(this)">Demo Song</button>
+          </div>
+          <div class="status-line" id="right-status">Advanced settings. Open when you need more controls.</div>
+        </div>
+      </div>
+
+      <div class="status-strip">
+        <div class="status-chip"><strong>Instrument</strong><span id="instrument-display">Grand Piano</span></div>
+        <div class="status-chip"><strong>Mode</strong><span id="mode-display">Normal</span></div>
+        <div class="status-chip"><strong>Live</strong><span id="live-status">Select a song to view its sequence.</span></div>
+        <div class="status-chip"><strong>Function</strong><span id="left-status">Quick tips and function status appear here.</span></div>
+      </div>
+      <div class="info-card" id="info-panel">
+        <div class="panel-label" id="info-heading">Timbre</div>
+        <p id="info-copy" class="status-line">Timbre is the sound character of the keyboard. In the JRK661, pressing Timbre and entering a code selects sounds like harmonium, piano, flute, or strings.</p>
+      </div>
+
+      <div class="keyboard-container">
+        <div class="keyboard" id="keyboard"></div>
+      </div>
+      <div class="keyboard-controls" style="display:flex;gap:12px;justify-content:center;margin-top:10px;">
+        <button class="panel-mini-button" onclick="shiftKeyboard(-1)">◀︎ Octave</button>
+        <button class="panel-mini-button" onclick="shiftKeyboard(1)">Octave ▶︎</button>
+      </div>
+
+      <div class="live-area" id="live-area">
+        <div class="live-controls">
+          <div class="live-heading">
+            <h3>Song Guide</h3>
+            <p class="live-cta">Select a song from Quick Start to load the guide. Use the button to view phrase sequences.</p>
+          </div>
+          <button class="live-tab-button" id="sequence-tab" onclick="showLiveSection('sequence')">Show Sequence</button>
+        </div>
+
+        <div class="live-section" id="song-section">
+          <h3>Song Guide</h3>
+          <p id="song-description">Choose a song to load a simple playing sequence and explanation. Click a step to hear it and watch the keys light up.</p>
+          <div class="live-instructions">
+            <strong>How to use:</strong> select one of the 13 built-in songs, then switch to Sequence to see the melody blocks. Click any block to preview that phrase on the keyboard.
+          </div>
+        </div>
+
+        <div class="live-section hidden" id="sequence-section">
+          <h3>Visual Sequence</h3>
+          <div class="live-instructions">
+            <strong>Sequence view:</strong> each block is a playable phrase. When the live player runs, active phrases light up and show the current musical step.
+          </div>
+          <div class="live-sequence" id="sequence-steps"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    function shiftKeyboard(direction) {
+      const kb = document.getElementById('keyboard');
+      if (!kb) return;
+      const kw = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--key-width')) || 42;
+      const shift = direction * 12 * kw; // move by 12 keys (one octave)
+      kb.scrollBy({ left: shift, behavior: 'smooth' });
+    }
+
+    let currentLang = 'en';
+    let sustainEnabled = false;
+    let oneKeyEnabled = false;
+    let followEnabled = false;
+    let oneKeyChordEnabled = false;
+    let fillInEnabled = false;
+    let startStopActive = false;
+    let demoMode = false;
+    let keyboardKeys = [];
+    const translations = {
+      en: {
+        title: "Juarez Octave JRK661 Simulator",
+        subhead: "Interactive home screen for the JRK661 keyboard with 61 keys and realistic function buttons. Hover a button to read its meaning, and click Timbre to go to the live sound preset page.",
+        tone: "Timbre is the sound character of the keyboard. In the JRK661, pressing Timbre and entering a code selects sounds like harmonium, piano, flute, or strings.",
+        power: "Power turns the keyboard on or off. The real JRK661 has a power slider or button on the left side.",
+        rhythm: "Rhythm controls the built-in accompaniment patterns. On the JRK661, you can choose beats and start/stop them.",
+        demo: "Demo plays a built-in song sequence to show how the keyboard sounds when using selected presets.",
+        start: "Start/Stop begins or pauses the rhythm accompaniment or recording session.",
+        record: "Record captures the notes you play. The JRK661 can record a simple keyboard performance.",
+        tempo: "Tempo adjusts the speed of rhythms and demo songs. Speed up or slow down the beat.",
+        volume: "Volume changes the overall loudness of the sound coming from the speakers.",
+        style: "Style selects a preset rhythm category like pop, waltz, or traditional patterns.",
+        startstop: "Start/Stop toggles accompaniment and recording playback.",
+        sustain: "Sustain holds notes longer after you release them, making chords sound fuller.",
+        vibrato: "Vibrato adds a gentle pitch wobble to the sound when enabled.",
+        vibratoActive: "Vibrato is active. Keys will sound wobbly until you turn vibrato off.",
+        vibratoOff: "Vibrato is off. Keys will sound normal.",
+        onekey: "One-Key mode lets you play chords automatically with a single key.",
+        follow: "Follow listens to your melody and supports audio tracking on the real keyboard.",
+        onekeychord: "One-Key Chord plays a full chord in response to a single note.",
+        fillin: "Fill-In adds an extra drum or rhythm accent when pressed.",
+        openTimbre: "Open Timbre Sound Page",
+      },
+      hi: {
+        title: "Juarez Octave JRK661 सिम्युलेटर",
+        subhead: "JRK661 कीबोर्ड के लिए 61 कीज़ और वास्तविक फंक्शन बटनों वाला इंटरैक्टिव होम पेज। किसी बटन पर होवर करें और उसका अर्थ पढ़ें।",
+        tone: "Timbre कीबोर्ड की ध्वनि विशेषता है। JRK661 में Timbre दबाने और कोड दर्ज करने पर Harmonium, Piano, Flute या Strings जैसी आवाज़ चुनी जाती है।",
+        power: "Power कीबोर्ड को ऑन या ऑफ करता है। असली JRK661 में बाएं तरफ पावर बटन या स्लाइडर होता है।",
+        rhythm: "Rhythm बिल्ट-इन accompaniment पैटर्न को नियंत्रित करता है। आप बीट चुन सकते हैं और उन्हें चालू/बंद कर सकते हैं।",
+        demo: "Demo एक बिल्ट-इन गाना चलाता है जो चयनित प्रीसेट में कीबोर्ड की आवाज़ दिखाता है।",
+        start: "Start/Stop accompaniment या रिकॉर्डिंग सेशन को शुरू या रोकता है।",
+        record: "Record आपके द्वारा बजाए गए नोट्स को कैप्चर करता है। JRK661 साधारण कीबोर्ड प्रदर्शन रिकॉर्ड कर सकता है।",
+        tempo: "Tempo रिदम और डेमो गानों की गति को समायोजित करता है। बीट को तेज या धीमा करें।",
+        volume: "Volume स्पीकर से निकली कुल ध्वनि की तीव्रता बदलता है।",
+        style: "Style preset rhythm श्रेणी चुनता है, जैसे pop, waltz, या traditional पैटर्न।",
+        startstop: "Start/Stop accompaniment aur recording playback ko toggle karta hai.",
+        sustain: "Sustain notes ko chhode jane ke baad bhi zyada der tak rokta hai, chords ko fuller banata hai.",
+        vibrato: "Vibrato enabled hone par sound mein halki si pitch wobble add karta hai.",
+        vibratoActive: "Vibrato active hai. Keys tab tak wobbly sunai denge jab tak aap ise off nahi karte.",
+        vibratoOff: "Vibrato off hai. Keys normal sound karenge.",
+        onekey: "One-Key mode ek key se chords automatically bajane deta hai.",
+        follow: "Follow aapki melody ko sunta hai aur actual keyboard par audio tracking support karta hai.",
+        onekeychord: "One-Key Chord ek note ke response mein full chord bajata hai.",
+        fillin: "Fill-In ek extra drum ya rhythm accent add karta hai.",
+        openTimbre: "Timbre साउंड पेज खोलें",
+      },
+      hinglish: {
+        title: "Juarez Octave JRK661 Simulator",
+        subhead: "JRK661 keyboard ke liye 61 keys aur asli function buttons wala interactive home screen. Kisi button par hover karein aur uska meaning padhein.",
+        tone: "Timbre sound ki character hoti hai. JRK661 mein Timbre dabake aur code dalke Harmonium, Piano, Flute, Strings jaise sounds chune jaate hain.",
+        power: "Power keyboard ko on/off karta hai. Real JRK661 mein left side par power button ya slider hota hai.",
+        rhythm: "Rhythm built-in accompaniment patterns ko control karta hai. Aap beat chune aur start/stop kar sakte ho.",
+        demo: "Demo ek built-in song play karta hai jo selected preset mein keyboard ki sound dikhata hai.",
+        start: "Start/Stop rhythm accompaniment ya recording ko start/stop karta hai.",
+        record: "Record aapke bajaye gaye notes ko capture karta hai. JRK661 simple performance record kar sakta hai.",
+        tempo: "Tempo rhythm aur demo songs ki speed adjust karta hai. Beat ko tez ya slow karein.",
+        volume: "Volume overall loudness badalta hai jo speaker se aati hai.",
+        style: "Style preset rhythm category choose karta hai jaise pop, waltz, ya traditional patterns.",
+        startstop: "Start/Stop accompaniment aur recording playback ko toggle karta hai.",
+        openTimbre: "Timbre Sound Page kholo",
+      }
+    };
+
+    function setLanguage(lang, button) {
+      currentLang = lang;
+      document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+      button.classList.add('active');
+      document.querySelector('header h1').innerText = translations[lang].title;
+      document.querySelector('header p').innerText = translations[lang].subhead;
+      document.getElementById('info-heading').innerText = translations[lang].tone;
+      document.getElementById('timbre-button-text').innerText = translations[lang].openTimbre;
+    }
+
+    function openPage(url) {
+      window.location.href = url;
+    }
+
+    function showInfo(key) {
+      const text = translations[currentLang][key] || translations['en'][key] || 'Information not available.';
+      document.getElementById('info-title').innerText = key === 'tone' ? 'Timbre' : key.replace(/([A-Z])/g, ' $1').trim();
+      document.getElementById('info-copy').innerText = text;
+      if (['sustain','onekey','follow','vibrato'].includes(key)) {
+        document.getElementById('left-status').innerText = text;
+      } else if (['onekeychord','fillin','startstop','demo'].includes(key)) {
+        document.getElementById('right-status').innerText = text;
+      }
+    }
+
+    const tones = {
+      '000': { wave: 'sine', label: 'Grand Piano' },
+      '021': { wave: 'sawtooth', label: 'Harmonium' },
+      '022': { wave: 'sawtooth', label: 'Harmonium' },
+      '048': { wave: 'square', label: 'Strings' },
+      '073': { wave: 'triangle', label: 'Flute' },
+      '100': { wave: 'triangle', label: 'Electric Piano' },
+      '110': { wave: 'sine', label: 'Organ' },
+      '120': { wave: 'square', label: 'Accordion' }
+    };
+
+    function toggleTimbrePanel() {
+      const panel = document.getElementById('timbre-panel');
+      panel.classList.toggle('hidden');
+      document.getElementById('timbre-status').innerText = panel.classList.contains('hidden') ? 'Select Timbre to pick a code and instrument.' : 'Enter a tone code or choose an instrument from the list.';
+    }
+
+    function applyTimbreCode(event) {
+      event.preventDefault();
+      const codeInput = document.getElementById('timbre-code');
+      const select = document.getElementById('timbre-select');
+      const code = codeInput.value.trim() || select.value;
+      const selected = tones[code] || tones[select.value] || tones['000'];
+      currentWaveType = selected.wave;
+      document.getElementById('lcd-display').innerText = `MODE: ${code}`;
+      document.getElementById('instrument-display').innerText = selected.label;
+      document.getElementById('timbre-status').innerText = `Selected ${selected.label} (${code}). Play any key to hear it.`;
+      playNote(261.63);
+    }
+
+    function toggleSustain(button) {
+      button.classList.toggle('active');
+      sustainEnabled = button.classList.contains('active');
+      document.getElementById('left-status').innerText = sustainEnabled ? 'Sustain enabled. Notes will ring longer.' : 'Sustain disabled. Notes stop normally.';
+      document.getElementById('mode-display').innerText = sustainEnabled ? 'Sustain' : 'Normal';
+    }
+
+    function toggleOneKey(button) {
+      button.classList.toggle('active');
+      oneKeyEnabled = button.classList.contains('active');
+      document.getElementById('left-status').innerText = oneKeyEnabled ? 'One-Key mode enabled. Single keys play chords.' : 'One-Key mode disabled.';
+      document.getElementById('mode-display').innerText = oneKeyEnabled ? 'One-Key' : 'Normal';
+    }
+
+    function toggleFollow(button) {
+      button.classList.toggle('active');
+      followEnabled = button.classList.contains('active');
+      document.getElementById('left-status').innerText = followEnabled ? 'Follow enabled. Melody tracking simulated.' : 'Follow disabled.';
+    }
+
+    function toggleOneKeyChord(button) {
+      button.classList.toggle('active');
+      oneKeyChordEnabled = button.classList.contains('active');
+      document.getElementById('right-status').innerText = oneKeyChordEnabled ? 'One-Key Chord active. Keys play full chords.' : 'One-Key Chord disabled.';
+      document.getElementById('mode-display').innerText = oneKeyChordEnabled ? 'One-Key Chord' : 'Normal';
+    }
+
+    function toggleFillIn(button) {
+      button.classList.toggle('active');
+      fillInEnabled = button.classList.contains('active');
+      document.getElementById('right-status').innerText = fillInEnabled ? 'Fill-In enabled. Accent notes will play.' : 'Fill-In disabled.';
+    }
+
+    function toggleStartStop(button) {
+      button.classList.toggle('active');
+      startStopActive = button.classList.contains('active');
+      if (startStopActive) {
+        document.getElementById('right-status').innerText = 'Playback started. Live song is playing.';
+        document.getElementById('mode-display').innerText = 'Playing';
+        playLiveSong();
+      } else {
+        document.getElementById('right-status').innerText = 'Playback stopped.';
+        document.getElementById('mode-display').innerText = 'Normal';
+        stopLiveSong();
+      }
+    }
+
+    function toggleDemo(button) {
+      button.classList.toggle('active');
+      demoMode = button.classList.contains('active');
+      document.getElementById('right-status').innerText = demoMode ? 'Demo mode on. Loading example song.' : 'Demo mode off.';
+      if (demoMode) {
+        document.getElementById('song-select').value = 'twinkle';
+        selectSong({ target: document.getElementById('song-select') });
+        showLiveSection('sequence');
+      }
+    }
+
+    function showLiveSection(section) {
+      document.getElementById('song-section').classList.toggle('hidden', section !== 'song');
+      document.getElementById('sequence-section').classList.toggle('hidden', section !== 'sequence');
+      document.getElementById('song-tab').classList.toggle('active', section === 'song');
+      document.getElementById('sequence-tab').classList.toggle('active', section === 'sequence');
+    }
+
+    const liveSongs = {
+      twinkle: {
+        title: 'Twinkle Twinkle Little Star',
+        description: 'A simple melody based on repeated notes and small steps. Start with the tonic and move using C, G, A, F, E, D.',
+        steps: ['C4 C4 G4 G4', 'A4 A4 G4', 'F4 F4 E4 E4', 'D4 D4 C4']
+      },
+      happy: {
+        title: 'Happy Birthday',
+        description: 'A short celebratory song with stepwise motion. Play the pattern in rising and falling melodic pairs.',
+        steps: ['G4 G4 A4 G4', 'C5 B4', 'G4 G4 A4 G4', 'D5 C5', 'G4 G4 G5 E5', 'C5 B4 A4']
+      },
+      jingle: {
+        title: 'Jingle Bells',
+        description: 'A cheerful festive tune with repeated motifs. Use bright, steady quarter notes and a simple chorus.',
+        steps: ['E4 E4 E4', 'E4 E4 E4', 'E4 G4 C4 D4 E4']
+      },
+      mary: {
+        title: 'Mary Had a Little Lamb',
+        description: 'A gentle nursery melody with descending motion and easy repeat phrases.',
+        steps: ['E4 D4 C4 D4', 'E4 E4 E4', 'D4 D4 D4', 'E4 G4 G4']
+      },
+      ode: {
+        title: 'Ode to Joy',
+        description: 'A bright tune with rising and falling intervals from Beethoven’s famous theme.',
+        steps: ['E4 E4 F4 G4', 'G4 F4 E4 D4', 'C4 C4 D4 E4', 'E4 D4 D4']
+      },
+      row: {
+        title: 'Row, Row, Row Your Boat',
+        description: 'A flowing round that repeats a simple stepwise melody in a gentle rhythm.',
+        steps: ['C4 C4 C4', 'D4 E4 E4', 'D4 E4 F4', 'E4 D4 C4']
+      },
+      london: {
+        title: 'London Bridge',
+        description: 'A playful folk song with descending intervals and repeating phrases.',
+        steps: ['G4 A4 G4 F4', 'E4 F4 E4 D4', 'C4 D4 E4 C4', 'D4 E4 D4 C4']
+      },
+      brahms: {
+        title: 'Brahms’ Lullaby',
+        description: 'A soothing lullaby with soft arpeggios and a calming gentle flow.',
+        steps: ['G4 E4 F4 D4', 'E4 C4 D4 B3', 'C4 B3 A3', 'C4 G4 E4']
+      },
+      amazing: {
+        title: 'Amazing Grace',
+        description: 'A noble hymn with stepwise phrases that move between tonic and dominant notes.',
+        steps: ['E4 D4 C4 C4', 'D4 E4 E4', 'D4 C4 B3 A3', 'G3 G3 A3 C4']
+      },
+      oldmac: {
+        title: 'Old MacDonald',
+        description: 'A cheerful children’s song with repeated open intervals and simple melody lines.',
+        steps: ['G4 G4 G4 D4', 'E4 E4 D4', 'B4 B4 A4 A4', 'G4 D4 E4 C4']
+      },
+      silent: {
+        title: 'Silent Night',
+        description: 'A peaceful carol with long notes and gentle stepwise motion.',
+        steps: ['G4 A4 G4 E4', 'G4 A4 G4 E4', 'D4 B3 A3 A3', 'G4 A4 G4 E4']
+      },
+      frere: {
+        title: 'Frere Jacques',
+        description: 'A classic round with easy repetition and a friendly singalong shape.',
+        steps: ['C4 D4 E4 C4', 'C4 D4 E4 C4', 'E4 F4 G4', 'E4 F4 G4']
+      },
+      saints: {
+        title: 'When the Saints Go Marching In',
+        description: 'A lively gospel tune with bouncing melodies and joyful repeated phrases.',
+        steps: ['C4 E4 F4 G4', 'G4 F4 E4 D4', 'C4 E4 F4 G4', 'A4 G4 F4 E4']
+      }
+    };
+
+    let liveSongInterval = null;
+    let currentLiveIndex = 0;
+    const songStepEls = [];
+
+    function playLiveSong() {
+      stopLiveSong();
+      const key = document.getElementById('song-select').value;
+      const song = liveSongs[key];
+      if (!song) return;
+      currentLiveIndex = 0;
+      liveSongInterval = setInterval(() => {
+        if (currentLiveIndex >= song.steps.length) {
+          currentLiveIndex = 0;
         }
+        const step = song.steps[currentLiveIndex];
+        highlightStep(currentLiveIndex);
+        playSequenceStep(step);
+        currentLiveIndex += 1;
+      }, 1800);
+    }
 
-        // Build Visual 2-Octave Keyboard
-        const notes = [
-            { name: 'C', type: 'white', freq: 261.63, label: 'Sa' },
-            { name: 'C#', type: 'black', freq: 277.18, label: '' },
-            { name: 'D', type: 'white', freq: 293.66, label: 'Re' },
-            { name: 'D#', type: 'black', freq: 311.13, label: '' },
-            { name: 'E', type: 'white', freq: 329.63, label: 'Ga' },
-            { name: 'F', type: 'white', freq: 349.23, label: 'Ma' },
-            { name: 'F#', type: 'black', freq: 369.99, label: '' },
-            { name: 'G', type: 'white', freq: 392.00, label: 'Pa' },
-            { name: 'G#', type: 'black', freq: 415.30, label: '' },
-            { name: 'A', type: 'white', freq: 440.00, label: 'Dha' },
-            { name: 'A#', type: 'black', freq: 466.16, label: '' },
-            { name: 'B', type: 'white', freq: 493.88, label: 'Ni' },
-            { name: 'C2', type: 'white', freq: 523.25, label: 'Sa' }
-        ];
+    function stopLiveSong() {
+      if (liveSongInterval) {
+        clearInterval(liveSongInterval);
+        liveSongInterval = null;
+      }
+      songStepEls.forEach(el => el.classList.remove('active'));
+    }
 
-        const pianoContainer = document.getElementById('piano');
+    function selectSong(event) {
+      const key = event.target.value;
+      const song = liveSongs[key];
+      document.getElementById('live-status').innerText = `${song.title} loaded.`;
+      document.getElementById('song-description').innerText = song.description;
+      const steps = document.getElementById('sequence-steps');
+      steps.innerHTML = '';
+      song.steps.forEach((step, index) => {
+        const div = document.createElement('div');
+        div.className = 'live-step';
+        div.innerText = `${index + 1}. ${step}`;
+        div.onclick = () => {
+          highlightStep(index);
+          playSequenceStep(step);
+        };
+        steps.appendChild(div);
+        songStepEls[index] = div;
+      });
+    }
 
-        notes.forEach((note, index) => {
-            const key = document.createElement('div');
-            key.className = `key ${note.type}`;
-            key.id = `key-${index}`;
-            key.innerText = note.label;
-            
-            key.addEventListener('click', () => {
-                playNote(note.freq);
-                highlightKey(key);
-            });
+    function highlightStep(index) {
+      songStepEls.forEach((el, i) => el.classList.toggle('active', i === index));
+    }
 
-            pianoContainer.appendChild(key);
-        });
+    function playSequenceStep(sequence) {
+      const notes = sequence.split(' ');
+      notes.forEach((note, idx) => {
+        setTimeout(() => {
+          const { base, octave } = parseNoteInput(note);
+          const freq = getFrequency(`${base}${octave}`);
+          playNote(freq);
+          highlightKey(`${base}${octave}`);
+        }, idx * 440);
+      });
+    }
 
-        function highlightKey(element) {
-            element.classList.add('active');
-            setTimeout(() => element.classList.remove('active'), 400);
-        }
+    function parseNoteInput(note) {
+      const match = note.match(/^([A-G]#?)(\d?)$/);
+      if (!match) return { base: 'C', octave: 4 };
+      return { base: match[1], octave: match[2] ? parseInt(match[2], 10) : 4 };
+    }
 
-        function playSargam() {
-            const sequence = [0, 2, 4, 5, 7, 9, 11, 12]; // Note indexes
-            sequence.forEach((noteIdx, step) => {
-                setTimeout(() => {
-                    const keyEl = document.getElementById(`key-${noteIdx}`);
-                    playNote(notes[noteIdx].freq);
-                    highlightKey(keyEl);
-                }, step * 600);
-            });
-        }
-    </script>
+    function getFrequency(note) {
+      const noteMap = { C: 0, 'C#': 1, D: 2, 'D#': 3, E: 4, F: 5, 'F#': 6, G: 7, 'G#': 8, A: 9, 'A#': 10, B: 11 };
+      const match = note.match(/^([A-G]#?)(\d)$/);
+      if (!match) return 440;
+      const [_, base, oct] = match;
+      const midi = 12 + noteMap[base] + (parseInt(oct, 10) * 12);
+      return 440 * Math.pow(2, (midi - 69) / 12);
+    }
+
+    function highlightKey(note) {
+      const key = keyboardKeys.find(k => k.displayName === note);
+      if (key) {
+        key.element.classList.add('active');
+        setTimeout(() => key.element.classList.remove('active'), 250);
+      }
+    }
+
+    function toggleVibrato(button) {
+      button.classList.toggle('active');
+      vibratoEnabled = button.classList.contains('active');
+      document.getElementById('left-status').innerText = vibratoEnabled ? translations[currentLang].vibratoActive : translations[currentLang].vibratoOff;
+      document.getElementById('mode-display').innerText = vibratoEnabled ? 'Vibrato' : 'Normal';
+    }
+
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    let currentWaveType = 'sine';
+    let vibratoEnabled = false;
+
+    function playNote(freq) {
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      const releaseTime = sustainEnabled ? 2.5 : 1.05;
+      const notes = [freq];
+      if (oneKeyChordEnabled || oneKeyEnabled) {
+        const third = freq * Math.pow(2, 4 / 12);
+        const fifth = freq * Math.pow(2, 7 / 12);
+        notes.push(third, fifth);
+      }
+      const gain = audioCtx.createGain();
+      gain.gain.setValueAtTime(0.35 / notes.length, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + releaseTime);
+
+      let lfo;
+      if (vibratoEnabled) {
+        lfo = audioCtx.createOscillator();
+        const lfoGain = audioCtx.createGain();
+        lfo.type = 'sine';
+        lfo.frequency.setValueAtTime(5, audioCtx.currentTime);
+        lfoGain.gain.setValueAtTime(freq * 0.004, audioCtx.currentTime);
+        lfo.connect(lfoGain);
+        lfoGain.connect(gain);
+        lfo.start();
+        lfo.stop(audioCtx.currentTime + releaseTime);
+      }
+
+      notes.forEach(noteFreq => {
+        const osc = audioCtx.createOscillator();
+        osc.type = currentWaveType;
+        osc.frequency.setValueAtTime(noteFreq, audioCtx.currentTime);
+        osc.connect(gain);
+        osc.start();
+        osc.stop(audioCtx.currentTime + releaseTime);
+      });
+
+      gain.connect(audioCtx.destination);
+    }
+
+    function setTone(code, text) {
+      document.getElementById('lcd-display').innerText = `MODE: ${code}`;
+      if (code === '021') currentWaveType = 'sawtooth';
+      else if (code === '073') currentWaveType = 'triangle';
+      else if (code === '048') currentWaveType = 'square';
+      else currentWaveType = 'sine';
+      playNote(261.63);
+    }
+
+    const noteNames = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+    const keyboard = document.getElementById('keyboard');
+
+    for (let i = 0; i < 61; i += 1) {
+      const midi = 36 + i;
+      const name = noteNames[midi % 12];
+      const octave = Math.floor((midi - 12) / 12);
+      const frequency = 440 * Math.pow(2, (midi - 69) / 12);
+      const isBlack = name.includes('#');
+
+      const key = document.createElement('div');
+      key.className = `key ${isBlack ? 'black' : 'white'}`;
+      key.innerHTML = `<span>${name}${octave}</span>`;
+      key.addEventListener('click', () => {
+        playNote(frequency);
+        key.classList.add('active');
+        setTimeout(() => key.classList.remove('active'), 220);
+      });
+
+      keyboardKeys.push({ displayName: `${name}${octave}`, element: key, frequency });
+      keyboard.appendChild(key);
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      showInfo('tone');
+      document.getElementById('timbre-button-text').innerText = translations.en.openTimbre;
+    });
+  </script>
 </body>
 </html>
