@@ -6,31 +6,28 @@
   <title>Papa's JRK661 Keyboard Guide</title>
   <style>
     :root {
-      --primary: #b45309; /* warm amber */
-      --accent: #f59e0b;
-      --bg: #fffaf0; /* soft cream */
-      --panel-bg: #ffffff;
-      --panel-surface: #fff6eb;
-      --text: #111827; /* deep charcoal */
-      --muted: #6b7280;
-      --shadow: rgba(17, 24, 39, 0.06);
-      --visible-keys: 18; /* 1.5 octaves visible */
-      --key-width: calc((100vw - 48px) / var(--visible-keys));
+      --primary: #1e3a8a;
+      --accent: #d97706;
+      --bg: #f8fafc;
+      --panel-bg: #0f172a;
+      --panel-surface: #1b263b;
+      --text: #0f172a;
+      --light: #f8fafc;
+      --shadow: rgba(15, 23, 42, 0.18);
     }
 
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
-    html, body {
+    body {
       margin: 0;
-      padding: 0;
-      height: 100%;
+      padding: 20px;
       background: var(--bg);
       color: var(--text);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
     }
-
-    body { padding: 16px; font-size: 18px; line-height: 1.45; }
 
     header {
       display: flex;
@@ -118,8 +115,8 @@
 
     .top-panel {
       display: grid;
-      grid-template-columns: 1fr;
-      gap: 12px;
+      grid-template-columns: minmax(180px, 1fr) 280px minmax(180px, 1fr);
+      gap: 14px;
       align-items: start;
       margin-bottom: 14px;
     }
@@ -127,10 +124,10 @@
     .panel-group {
       display: grid;
       gap: 10px;
-      background: var(--panel-surface);
+      background: rgba(15, 23, 42, 0.16);
       padding: 16px;
-      border-radius: 16px;
-      border: 1px solid rgba(17,24,39,0.04);
+      border-radius: 22px;
+      border: 1px solid rgba(148, 163, 184, 0.18);
     }
 
     .panel-center {
@@ -185,8 +182,6 @@
     .timbre-panel.hidden {
       display: none;
     }
-
-    .hidden { display: none !important; }
 
     .timbre-form {
       display: grid;
@@ -250,33 +245,70 @@
     }
 
     .panel-label {
-      color: var(--muted);
-      font-size: 0.95rem;
-      font-weight: 700;
-      letter-spacing: 0.03em;
+      color: #94a3b8;
+      font-size: 0.9rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
       text-transform: uppercase;
     }
 
     .panel-button,
     .panel-mini-button {
       border: none;
-      border-radius: 12px;
-      background: var(--primary);
+      border-radius: 16px;
+      background: #334155;
       color: white;
       cursor: pointer;
-      font-weight: 800;
-      padding: 16px 24px;
-      margin: 12px 0;
-      min-height: 60px;
-      font-size: 1.2rem;
-      box-shadow: 0 6px 18px var(--shadow);
+      font-weight: 700;
+      transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+      position: relative;
     }
 
-    .panel-button:active,
-    .panel-mini-button:active,
-    .panel-mini-button.active { transform: translateY(0); outline: 3px solid rgba(245,158,11,0.14); }
+    .panel-button {
+      min-width: 132px;
+      padding: 14px 18px;
+      font-size: 0.95rem;
+    }
 
-    /* Hover tooltips removed for touch-first devices. Use persistent helper text below controls. */
+    .panel-mini-button {
+      min-width: 90px;
+      padding: 10px 14px;
+      font-size: 0.86rem;
+    }
+
+    .panel-button:hover,
+    .panel-mini-button:hover,
+    .panel-mini-button.active {
+      background: var(--accent);
+      transform: translateY(-1px);
+      box-shadow: 0 10px 18px rgba(0,0,0,0.18);
+    }
+
+    .tooltip {
+      visibility: hidden;
+      width: 240px;
+      opacity: 0;
+      pointer-events: none;
+      position: absolute;
+      bottom: 130%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(15, 23, 42, 0.96);
+      color: white;
+      border-radius: 14px;
+      padding: 10px 12px;
+      font-size: 0.85rem;
+      line-height: 1.4;
+      box-shadow: 0 12px 24px rgba(0,0,0,0.22);
+      transition: opacity 0.2s ease;
+      z-index: 20;
+    }
+
+    .panel-button:hover .tooltip,
+    .panel-mini-button:hover .tooltip {
+      visibility: visible;
+      opacity: 1;
+    }
 
     .lcd-display {
       background: linear-gradient(180deg, #0284c7 0%, #0369a1 100%);
@@ -306,18 +338,18 @@
     }
 
     .status-chip {
-      background: #fff;
-      border: 1px solid rgba(17,24,39,0.06);
-      border-radius: 12px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 16px;
       padding: 12px 14px;
-      color: var(--text);
-      font-size: 0.96rem;
+      color: #f8fafc;
+      font-size: 0.92rem;
     }
 
     .status-chip strong {
       display: block;
       margin-bottom: 6px;
-      color: var(--muted);
+      color: #e2e8f0;
       font-size: 0.84rem;
       letter-spacing: 0.04em;
       text-transform: uppercase;
@@ -353,14 +385,12 @@
     }
 
     .live-instructions {
-      background: #fff;
-      border: 1px solid rgba(17,24,39,0.04);
-      border-radius: 12px;
-      padding: 12px 14px;
-      color: var(--text);
-      font-size: 0.98rem;
+      background: rgba(15, 23, 42, 0.22);
+      border-radius: 16px;
+      padding: 14px 16px;
+      color: #f8fafc;
+      font-size: 0.92rem;
       line-height: 1.6;
-      box-shadow: 0 6px 12px var(--shadow);
     }
 
     .live-section.hidden {
@@ -374,14 +404,12 @@
     }
 
     .live-step {
-      background: #fff;
-      border: 1px solid rgba(17,24,39,0.06);
-      border-radius: 12px;
-      padding: 14px;
+      background: rgba(15, 23, 42, 0.55);
+      border-radius: 14px;
+      padding: 12px;
       text-align: center;
-      font-size: 1rem;
-      color: var(--text);
-      box-shadow: 0 6px 14px var(--shadow);
+      font-size: 0.92rem;
+      color: #ffffff;
     }
 
     .live-tab-button {
@@ -423,17 +451,14 @@
       display: flex;
       align-items: flex-end;
       height: 210px;
+      min-width: 2200px;
       padding: 0 10px 8px;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: none; /* Firefox */
     }
-
-    .keyboard::-webkit-scrollbar { display: none; }
 
     .key {
       position: relative;
-      border: 1px solid rgba(17,24,39,0.06);
+      border: 1px solid #64748b;
+      box-shadow: inset 0 -2px 4px rgba(0,0,0,0.08);
       display: flex;
       align-items: flex-end;
       justify-content: center;
@@ -441,39 +466,38 @@
       cursor: pointer;
       user-select: none;
       transition: transform 0.3s ease, box-shadow 0.3s ease;
-      box-sizing: border-box;
     }
 
     .key.white {
-      width: var(--key-width);
+      width: 42px;
       height: 100%;
-      background: #fff;
+      background: #f8fafc;
       z-index: 1;
-      color: var(--text);
-      border-radius: 0 0 12px 12px;
-      margin-right: 2px;
+      color: #334155;
+      border-radius: 0 0 16px 16px;
     }
 
     .key.black {
-      width: calc(var(--key-width) * 0.66);
+      width: 28px;
       height: 62%;
-      margin-left: calc(var(--key-width) * -0.33);
-      margin-right: calc(var(--key-width) * -0.33);
-      background: #111827;
+      margin-left: -14px;
+      margin-right: -14px;
+      background: #0f172a;
       z-index: 2;
-      color: #fff;
-      border-radius: 0 0 10px 10px;
-      box-shadow: 0 8px 14px rgba(17,24,39,0.08);
+      color: white;
+      border-radius: 0 0 12px 12px;
+      box-shadow: 0 8px 14px rgba(0,0,0,0.25);
     }
 
     .key span {
-      font-size: 0.95rem;
-      letter-spacing: 0.02em;
+      font-size: 0.7rem;
+      letter-spacing: 0.03em;
       margin-bottom: 8px;
-      font-weight: 700;
     }
 
-    /* Hover effects removed for consistency on touch devices */
+    .key:hover {
+      transform: translateY(-2px);
+    }
 
     .key.active {
       background: var(--accent) !important;
@@ -597,65 +621,55 @@
   <main class="stage">
     <section class="keyboard-chassis">
       <div class="top-panel">
-        <div class="panel-group quick-start" id="quick-start">
-          <div class="panel-label">Quick Start</div>
-          <div>
-            <div class="panel-label">Timbre / Sound</div>
-            <button class="panel-button" title="Open Timbre code input" onclick="toggleTimbrePanel()"><span id="timbre-button-text">Timbre</span></button>
-            <div class="status-line" id="timbre-status">Select Timbre to pick a code and instrument.</div>
-            <div class="timbre-panel hidden" id="timbre-panel">
-              <form class="timbre-form" onsubmit="applyTimbreCode(event)">
-                <div class="timbre-input-row">
-                  <input id="timbre-code" type="number" min="1" max="255" placeholder="Enter code 1–255" />
-                  <select id="timbre-select">
-                    <option value="000">000 — Grand Piano</option>
-                    <option value="021">021 — Harmonium</option>
-                    <option value="022">022 — Harmonium</option>
-                    <option value="048">048 — Strings</option>
-                    <option value="073">073 — Flute</option>
-                  </select>
-                  <button class="panel-mini-button" type="submit">Apply</button>
-                </div>
-              </form>
-            </div>
+        <div class="panel-group">
+          <div class="panel-label">Left Controls</div>
+          <div class="button-row">
+            <button class="panel-mini-button" title="Turn Vibrato on/off" onclick="toggleVibrato(this)" onmouseover="showInfo('vibrato')">Vibrato</button>
+            <button class="panel-mini-button" title="Hold notes longer" onclick="toggleSustain(this)" onmouseover="showInfo('sustain')">Sustain</button>
+            <button class="panel-mini-button" title="Auto chord single-key mode" onclick="toggleOneKey(this)" onmouseover="showInfo('onekey')">One-Key</button>
+            <button class="panel-mini-button" title="Follow the melody input" onclick="toggleFollow(this)" onmouseover="showInfo('follow')">Follow</button>
           </div>
+          <div class="status-line" id="left-status">Hover or select a function for details.</div>
+        </div>
 
-          <div style="margin-top:12px;">
-            <div class="panel-label">Song Guide</div>
-            <select id="song-select" onchange="selectSong(event)" class="panel-button">
-              <option value="twinkle">Twinkle Twinkle Little Star</option>
-              <option value="happy">Happy Birthday</option>
-              <option value="jingle">Jingle Bells</option>
-              <option value="mary">Mary Had a Little Lamb</option>
-              <option value="ode">Ode to Joy</option>
-              <option value="row">Row, Row, Row Your Boat</option>
-              <option value="london">London Bridge</option>
-              <option value="brahms">Brahms' Lullaby</option>
-              <option value="amazing">Amazing Grace</option>
-              <option value="oldmac">Old MacDonald</option>
-              <option value="silent">Silent Night</option>
-              <option value="frere">Frere Jacques</option>
-              <option value="saints">When the Saints Go Marching In</option>
-            </select>
-            <p class="status-line">Tap a song to load its guide. Use <strong>Show Sequence</strong> to view and play phrases.</p>
+        <div class="panel-center panel-group">
+          <div class="panel-label">Timbre / Sound</div>
+          <button class="panel-button" title="Open Timbre code input" onclick="toggleTimbrePanel()" onmouseover="showInfo('timbre')"><span id="timbre-button-text">Timbre</span></button>
+          <div class="status-line" id="timbre-status">Select Timbre to pick a code and instrument.</div>
+          <div class="timbre-panel hidden" id="timbre-panel">
+            <form class="timbre-form" onsubmit="applyTimbreCode(event)">
+              <div class="timbre-input-row">
+                <input id="timbre-code" type="number" min="1" max="255" placeholder="Enter code 1–255" />
+                <select id="timbre-select">
+                  <option value="000">000 — Grand Piano</option>
+                  <option value="021">021 — Harmonium</option>
+                  <option value="022">022 — Harmonium</option>
+                  <option value="048">048 — Strings</option>
+                  <option value="073">073 — Flute</option>
+                </select>
+                <button class="panel-mini-button" type="submit">Apply</button>
+              </div>
+              <div class="timbre-samples" id="timbre-samples">
+                <ul>
+                  <li><span>000</span><span>Grand Piano</span></li>
+                  <li><span>021</span><span>Harmonium</span></li>
+                  <li><span>048</span><span>Strings</span></li>
+                  <li><span>073</span><span>Flute</span></li>
+                </ul>
+              </div>
+            </form>
           </div>
         </div>
 
-        <button class="panel-button" id="advanced-toggle" aria-expanded="false" onclick="(function(){const p=document.getElementById('advanced-panel');p.classList.toggle('hidden');this.setAttribute('aria-expanded', this.getAttribute('aria-expanded')==='true'?'false':'true');})()">Advanced Controls</button>
-
-        <div class="panel-group hidden" id="advanced-panel">
-          <div class="panel-label">Advanced JRK661 Controls</div>
+        <div class="panel-group">
+          <div class="panel-label">Right Controls</div>
           <div class="button-row">
-            <button class="panel-mini-button" title="Turn Vibrato on/off" onclick="toggleVibrato(this)">Vibrato</button>
-            <button class="panel-mini-button" title="Hold notes longer" onclick="toggleSustain(this)">Sustain</button>
-            <button class="panel-mini-button" title="Auto chord single-key mode" onclick="toggleOneKey(this)">One-Key</button>
-            <button class="panel-mini-button" title="Follow the melody input" onclick="toggleFollow(this)">Follow</button>
-            <button class="panel-mini-button" title="One-Key Chord" onclick="toggleOneKeyChord(this)">One-Key Chord</button>
-            <button class="panel-mini-button" title="Fill-In" onclick="toggleFillIn(this)">Fill-In</button>
-            <button class="panel-mini-button" title="Start/Stop" onclick="toggleStartStop(this)">Start/Stop</button>
-            <button class="panel-mini-button" title="Demo Song" onclick="toggleDemo(this)">Demo Song</button>
+            <button class="panel-mini-button" onmouseover="showInfo('onekeychord')" onclick="toggleOneKeyChord(this)">One-Key Chord</button>
+            <button class="panel-mini-button" onmouseover="showInfo('fillin')" onclick="toggleFillIn(this)">Fill-In</button>
+            <button class="panel-mini-button" onmouseover="showInfo('startstop')" onclick="toggleStartStop(this)">Start/Stop</button>
+            <button class="panel-mini-button" onmouseover="showInfo('demo')" onclick="toggleDemo(this)">Demo Song</button>
           </div>
-          <div class="status-line" id="right-status">Advanced settings. Open when you need more controls.</div>
+          <div class="status-line" id="right-status">This panel reflects the actual JRK661 top control strip.</div>
         </div>
       </div>
 
@@ -663,7 +677,6 @@
         <div class="status-chip"><strong>Instrument</strong><span id="instrument-display">Grand Piano</span></div>
         <div class="status-chip"><strong>Mode</strong><span id="mode-display">Normal</span></div>
         <div class="status-chip"><strong>Live</strong><span id="live-status">Select a song to view its sequence.</span></div>
-        <div class="status-chip"><strong>Function</strong><span id="left-status">Quick tips and function status appear here.</span></div>
       </div>
       <div class="info-card" id="info-panel">
         <div class="panel-label" id="info-heading">Timbre</div>
@@ -673,18 +686,29 @@
       <div class="keyboard-container">
         <div class="keyboard" id="keyboard"></div>
       </div>
-      <div class="keyboard-controls" style="display:flex;gap:12px;justify-content:center;margin-top:10px;">
-        <button class="panel-mini-button" onclick="shiftKeyboard(-1)">◀︎ Octave</button>
-        <button class="panel-mini-button" onclick="shiftKeyboard(1)">Octave ▶︎</button>
-      </div>
 
       <div class="live-area" id="live-area">
         <div class="live-controls">
           <div class="live-heading">
             <h3>Song Guide</h3>
-            <p class="live-cta">Select a song from Quick Start to load the guide. Use the button to view phrase sequences.</p>
+            <p class="live-cta">Select a song to learn the melody and see the keyboard phrase-by-phrase.</p>
           </div>
           <button class="live-tab-button" id="sequence-tab" onclick="showLiveSection('sequence')">Show Sequence</button>
+          <select id="song-select" onchange="selectSong(event)">
+            <option value="twinkle">Twinkle Twinkle Little Star</option>
+            <option value="happy">Happy Birthday</option>
+            <option value="jingle">Jingle Bells</option>
+            <option value="mary">Mary Had a Little Lamb</option>
+            <option value="ode">Ode to Joy</option>
+            <option value="row">Row, Row, Row Your Boat</option>
+            <option value="london">London Bridge</option>
+            <option value="brahms">Brahms' Lullaby</option>
+            <option value="amazing">Amazing Grace</option>
+            <option value="oldmac">Old MacDonald</option>
+            <option value="silent">Silent Night</option>
+            <option value="frere">Frere Jacques</option>
+            <option value="saints">When the Saints Go Marching In</option>
+          </select>
         </div>
 
         <div class="live-section" id="song-section">
@@ -707,14 +731,6 @@
   </main>
 
   <script>
-    function shiftKeyboard(direction) {
-      const kb = document.getElementById('keyboard');
-      if (!kb) return;
-      const kw = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--key-width')) || 42;
-      const shift = direction * 12 * kw; // move by 12 keys (one octave)
-      kb.scrollBy({ left: shift, behavior: 'smooth' });
-    }
-
     let currentLang = 'en';
     let sustainEnabled = false;
     let oneKeyEnabled = false;
